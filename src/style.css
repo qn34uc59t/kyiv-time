@@ -1,0 +1,619 @@
+@import "@fontsource-variable/inter";
+
+:root {
+  --paper: #f6f2ec;
+  --ink: #1d1a17;
+  --ink-soft: #6f675e;
+  --coral: #ee6a58;
+  --tint: color-mix(in srgb, var(--ink) 7%, var(--paper));
+  --surface: color-mix(in srgb, var(--ink) 9%, var(--paper));
+  --tint-strong: color-mix(in srgb, var(--ink) 22%, var(--paper));
+  --gutter: 20px;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #161412;
+    --ink: #f2ece4;
+    --ink-soft: #9a9086;
+    --coral: #f27d6c;
+  }
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+/* A finger on a row (especially the drag grip) must not start a text selection or the iOS callout. */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+#q, .info-pop {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+html {
+  background: var(--paper);
+  overflow-x: clip;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Inter Variable", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  padding: env(safe-area-inset-top) max(var(--gutter), env(safe-area-inset-right))
+    env(safe-area-inset-bottom) max(var(--gutter), env(safe-area-inset-left));
+}
+
+:root { --wrap: 720px; }
+
+main {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding-block: 32px 102px;
+}
+
+.num { font-variant-numeric: tabular-nums; }
+
+.label {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.kyiv-time {
+  font-size: clamp(4.5rem, 24vw, 8rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-top: 16px;
+}
+
+.kyiv-time .sep {
+  color: var(--coral);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.78; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kyiv-time .sep { animation: none; }
+}
+
+.kyiv-time .ampm { font-size: 0.3em; }
+.time .ampm { font-size: 0.45em; }
+
+.kyiv-time .ampm,
+.time .ampm {
+  color: var(--ink-soft);
+  font-weight: 500;
+  letter-spacing: 0;
+  margin-left: 0.3em;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wordmark { display: block; color: var(--ink); }
+
+.wordmark-svg {
+  display: block;
+  flex: none;
+  height: 22px;
+  aspect-ratio: 248 / 55;
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+}
+
+.switches { display: flex; gap: 4px; margin-left: auto; }
+.switch .label { white-space: nowrap; }
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding-left: 12px;
+}
+
+.switch i {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--tint-strong);
+  transition: background-color 0.15s;
+}
+
+.switch i::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--paper);
+  transition: translate 0.15s;
+}
+
+.switch[aria-checked="true"] i { background: var(--coral); }
+.switch[aria-checked="true"] i::after { translate: 16px 0; }
+
+.rows {
+  list-style: none;
+  padding: 0;
+  margin-top: 40px;
+}
+
+.rows li {
+  position: relative;
+  margin-bottom: 28px;
+  display: grid;
+  grid-template-columns: 1fr auto 40px 40px;
+  align-items: center;
+  column-gap: 8px;
+  transition: transform 0.15s;
+}
+
+.rows.sortable li { grid-template-columns: 28px minmax(0, 1fr) auto 40px 40px; column-gap: 4px; }
+.rows.sortable .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rows.sortable .who { min-width: 0; }
+
+.grip {
+  width: 28px;
+  margin-left: -6px;
+  opacity: 0.7;
+  cursor: grab;
+  touch-action: none;
+}
+
+.rows li.dragging { z-index: 1; transition: none; isolation: isolate; }
+.rows li.dragging .grip { cursor: grabbing; }
+.rows li.dragging::before {
+  content: "";
+  position: absolute;
+  inset: -8px -10px;
+  z-index: -1;
+  border-radius: 16px;
+  background: var(--tint);
+}
+
+.who, .when { display: grid; gap: 2px; }
+.when { text-align: right; }
+.name { font-size: 1.125rem; font-weight: 500; }
+.time { font-size: 2rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 44px;
+  color: var(--ink-soft);
+}
+
+.remove { font-size: 1.5rem; }
+
+.add {
+  margin-top: 8px;
+  height: 52px;
+  padding: 0 28px;
+  border-radius: 26px;
+  background: var(--coral);
+  color: #1d1a17;
+  font-weight: 600;
+}
+
+.add:disabled {
+  background: var(--tint);
+  color: var(--ink-soft);
+  font-weight: 400;
+  cursor: default;
+}
+
+dialog {
+  border: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  overscroll-behavior: contain;
+}
+
+dialog[open] { display: flex; flex-direction: column; }
+
+/* Opens and closes by fading in out of a blur. Browsers without @starting-style / discrete transitions just show and hide it. */
+dialog {
+  opacity: 0;
+  filter: blur(8px);
+  translate: 0 16px;
+  transition:
+    opacity 0.3s,
+    filter 0.35s,
+    translate 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    overlay 0.35s allow-discrete,
+    display 0.35s allow-discrete;
+}
+
+/* At rest there must be no filter or transform on the dialog: iOS misplaces the text caret inside such ancestors. */
+dialog[open] { opacity: 1; filter: none; translate: none; }
+
+@starting-style {
+  dialog[open] { opacity: 0; filter: blur(8px); translate: 0 16px; }
+}
+
+dialog::backdrop {
+  background: color-mix(in srgb, var(--ink) 30%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  transition: opacity 0.35s, overlay 0.35s allow-discrete, display 0.35s allow-discrete;
+}
+
+dialog[open]::backdrop { opacity: 1; }
+
+@starting-style {
+  dialog[open]::backdrop { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog, dialog::backdrop { transition: none; }
+}
+
+/* While the picker is open the page behind must not scroll, or iOS drags the caret out of the field. */
+html:has(dialog[open]) { overflow: hidden; }
+
+/* Phones: a full-screen sheet sized to the visible area, so the keyboard never covers the results. */
+@media (max-width: 639px) {
+  dialog {
+    position: fixed;
+    inset: auto;
+    top: var(--vvt, 0px);
+    left: 0;
+    width: 100%;
+    max-width: none;
+    height: var(--vvh, 100dvh);
+    max-height: none;
+    margin: 0;
+  }
+
+  /* Opaque, so the strip iOS leaves above the keyboard's toolbar matches the sheet instead of showing the blurred page. */
+  dialog::backdrop {
+    background: var(--paper);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* Larger screens: a centred card in the app's panel tone. */
+@media (min-width: 640px) {
+  dialog {
+    width: 560px;
+    max-height: 70dvh;
+    margin: 12vh auto auto;
+    border-radius: 20px;
+    background: var(--surface);
+    --field: var(--paper);
+  }
+}
+
+.picker-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: max(12px, env(safe-area-inset-top)) var(--gutter) 8px;
+}
+
+#picker-close {
+  height: 48px;
+  padding: 0 4px 0 8px;
+  color: var(--coral);
+  font-weight: 600;
+}
+
+#q {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--field, var(--tint));
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#q:focus-visible { outline: 2px solid var(--coral); }
+#q::placeholder { color: var(--ink-soft); }
+
+.results {
+  list-style: none;
+  padding: 0 var(--gutter) max(16px, env(safe-area-inset-bottom));
+  margin: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.results button {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+}
+
+.results .empty { padding: 16px 0; }
+
+:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+
+.scrub {
+  position: fixed;
+  inset: auto 0 0 0;
+  padding: 12px max(var(--gutter), env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom))
+    max(var(--gutter), env(safe-area-inset-left));
+  z-index: 2;
+  background: var(--surface);
+}
+
+/* The page above the panel looks like a sheet with rounded bottom corners resting on the panel:
+   two inverse-corner wedges in the panel colour, anchored to the panel's top edge. */
+.scrub::before,
+.scrub::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.scrub::before {
+  left: 0;
+  background: radial-gradient(circle at 100% 0, transparent 19.5px, var(--surface) 20px);
+}
+
+.scrub::after {
+  right: 0;
+  background: radial-gradient(circle at 0 0, transparent 19.5px, var(--surface) 20px);
+}
+
+.scrub > * { max-width: var(--wrap); margin-inline: auto; }
+
+/* Part of the panel itself: it grows upward while a time is picked, so the slider at the bottom never moves.
+   The 0fr to 1fr grid-row trick animates the height; the panel's top corners ride along with its top edge. */
+.scrub-head {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scrub-head.open { grid-template-rows: 1fr; }
+
+.scrub-head-inner { min-height: 0; overflow: hidden; }
+
+.scrub-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.3s, filter 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The text sharpens as the strip arrives, and blurs again as it leaves. */
+.scrub-head.open .scrub-head-row { opacity: 1; filter: blur(0); transition-delay: 0.05s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scrub-head, .scrub-head-row { transition: none; }
+}
+
+.scrub-info { display: grid; min-width: 0; }
+#scrub-title { color: var(--ink); font-weight: 600; font-size: 0.875rem; }
+#scrub-sub { color: var(--coral); font-size: 0.875rem; }
+
+.now {
+  flex: none;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 18px;
+  background: var(--paper);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.now[hidden] { display: none; }
+
+#scrub-range {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  touch-action: pan-y;
+  cursor: pointer;
+}
+
+#scrub-range::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--tint-strong); }
+#scrub-range::-moz-range-track { height: 4px; border-radius: 2px; background: var(--tint-strong); }
+
+#scrub-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -12px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+#scrub-range::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+.kyiv-time.scrubbed .sep { animation: none; }
+
+.globe {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1;
+  margin: 40px auto 0;
+}
+
+.globe[hidden] { display: none; }
+
+.globe-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s;
+}
+
+.pin {
+  position: absolute;
+  top: anchor(bottom);
+  left: anchor(center);
+  translate: -50% 0;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  color: var(--ink);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.pin span {
+  display: inline-block;
+  max-width: 11ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  color: var(--ink-soft);
+}
+.pin b { font-weight: 600; font-variant-numeric: tabular-nums; }
+/* Kyiv's badge sits above its marker and above any neighbour. */
+.pin.home {
+  top: auto;
+  bottom: anchor(top);
+  margin: 0 0 8px;
+  z-index: 1;
+  background: var(--coral);
+  color: #1d1a17;
+}
+.pin.home span { color: inherit; }
+
+/* Wide screens with the globe on: globe on the left, everything else on the right. */
+@media (min-width: 960px) {
+  body:has(.globe:not([hidden])) { --wrap: 1120px; }
+
+  main:has(.globe:not([hidden])) {
+    display: grid;
+    grid-template-columns: minmax(0, 480px) minmax(0, 560px);
+    justify-content: space-between;
+    /* Centre in the space above the fixed scrubber (main's bottom padding matches its height). */
+    min-height: 100dvh;
+    align-items: center;
+    align-content: center;
+  }
+
+  main:has(.globe:not([hidden])) > .panel { grid-column: 2; }
+
+  main:has(.globe:not([hidden])) > .globe {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    max-width: none;
+  }
+}
+
+.info {
+  position: fixed;
+  z-index: 3;
+  top: calc(env(safe-area-inset-top) + 2px);
+  right: max(8px, env(safe-area-inset-right));
+}
+
+.info button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--ink-soft);
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.info-pop {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: max-content;
+  max-width: 80vw;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 0.75rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s, visibility 0.15s;
+}
+
+.info-pop { display: grid; gap: 2px; }
+.info-pop p:last-child { margin-top: 8px; }
+.info-pop a { color: var(--ink); text-underline-offset: 2px; }
+
+.info.open button,
+.info button:focus-visible { opacity: 1; }
+.info.open .info-pop,
+.info button:focus-visible + .info-pop { opacity: 1; visibility: visible; }
+
+@media (hover: hover) {
+  .info:hover button { opacity: 1; }
+  .info:hover .info-pop { opacity: 1; visibility: visible; }
+}
+
+@media (min-width: 960px) {
+  .info { top: 12px; right: 12px; }
+}
