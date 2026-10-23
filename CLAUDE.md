@@ -20,7 +20,7 @@ Scheduling happens in Kyiv time (Europe/Kyiv). Workers are worldwide. This tool 
 - Each row: city, country, local time, day offset vs Kyiv (e.g. "+1 day"), UTC offset difference ("−10h"). DST must be correct for the scrubbed date, not just today.
 - State persists in localStorage and mirrors into the URL (`?c=lisbon,tokyo`) so a link preloads a worker's zones. Validate and drop unknown or excluded ids.
 
-## Globe (optional "Globe" switch, off by default, saved + in the URL as `g=1`)
+## Globe (optional "Globe" switch, on by default for first-time visitors, saved + always in the URL as `g=1`/`g=0`)
 - Lives in `src/globe.ts`; the whole feature is removable by deleting that file, the switch and `syncGlobe` in `main.ts`.
 - Created only while the switch is on and destroyed when it's off (frees WebGL). Renders on demand: draws only while on screen and the tab is visible.
 - Starts aimed at Kyiv. Calibrated for cobe 2.0.1: `phi = -lon - 90°`, `theta = lat`.
@@ -58,7 +58,7 @@ Every decision answers: "is this good on a phone?"
 ## PWA and deploy
 - `vite-plugin-pwa` generates the manifest and service worker (auto-update, precaches the app, Latin fonts and the globe chunk; works offline). Icon source is `assets/logo.svg` (a square K mark with a coral dot; not shipped); `node scripts/build-icons.mjs` renders app, maskable, iOS and favicon PNGs into `public/icons/`.
 - The globe chunk is lazy-loaded the first time the switch is turned on.
-- GeoNames credit (CC BY 4.0) must stay visible in the page.
+- GeoNames credit (CC BY 4.0): the in-page info icon (name, email, credit) is currently hidden by the owner's choice (`hidden` on `#info` in `index.html`). The credit is in the README.
 - Deploy: `.github/workflows/deploy.yml` publishes `dist/` to GitHub Pages on push to `main`. Any static host works; HTTPS is required for install and offline.
 
 ## Commands
