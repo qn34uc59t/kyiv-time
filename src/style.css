@@ -356,7 +356,8 @@ html:has(dialog[open]) { overflow: hidden; }
   list-style: none;
   padding: 0 var(--gutter) max(16px, env(safe-area-inset-bottom));
   margin: 0;
-  flex: 1;
+  /* Safari collapses a basis-0 flex child inside an auto-height column, leaving the list a sliver. */
+  flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
