@@ -11,7 +11,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
         // The UI is Latin-only, so skip precaching the other font subsets.
-        globIgnores: ["**/*cyrillic*", "**/*greek*", "**/*vietnamese*"],
+        globIgnores: ["**/*cyrillic*", "**/*greek*", "**/*vietnamese*", "og.png"],
         // Walkthrough clips stay out of the install precache; each is kept for offline the first time it's watched.
         runtimeCaching: [
           {
