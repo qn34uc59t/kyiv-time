@@ -39,7 +39,13 @@
       <h1 class="kyiv-time num" id="kyiv-time"></h1>
       <p class="label" id="kyiv-meta"></p>
       <ul class="rows" id="rows"></ul>
-      <button class="add" id="add-btn" type="button"></button>
+      <div class="actions">
+        <button class="add" id="add-btn" type="button"></button>
+        <div class="hint" id="help-hint" role="status" hidden><b>Install this app</b><p>Add it to your home screen or dock and it opens like an app, on any device. Tap the ? to see how.</p></div>
+        <button class="icon help" id="help-btn" type="button" aria-label="How to use Kyiv Time">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.6a2.5 2.5 0 114 2c-.9.6-1.6 1.1-1.6 2.1"/><circle cx="12" cy="16.9" r="0.6" fill="currentColor"/></svg>
+        </button>
+      </div>
       </div>
       <section class="globe" id="globe" aria-label="Globe" hidden></section>
     </main>
@@ -65,6 +71,17 @@
       </div>
       <input id="scrub-range" type="range" min="-1440" max="1440" step="15" value="0" aria-label="Shift Kyiv time" />
     </footer>
+    <dialog id="tour" aria-label="Install this app">
+      <div class="tour-body" tabindex="-1" autofocus>
+        <div class="tour-step" id="tour-step">
+          <h2>Install this app</h2>
+          <p>Kyiv time, side by side with 4 other cities. Add it to your home screen or dock and it opens like an app, on any device.</p>
+          <div class="tour-tabs" id="tour-tabs" role="tablist" aria-label="Where to add it"></div>
+          <video id="tour-video" muted loop playsinline preload="none" disablepictureinpicture tabindex="0" role="button"></video>
+          <button class="add" id="tour-enter" type="button">Got it</button>
+        </div>
+      </div>
+    </dialog>
     <dialog id="picker" aria-label="Add a city">
       <div class="picker-bar">
         <input id="q" type="search" placeholder="Search city or country" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" />

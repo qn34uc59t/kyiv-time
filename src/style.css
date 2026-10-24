@@ -216,8 +216,52 @@ button {
 
 .remove { font-size: 1.5rem; }
 
-.add {
+.actions {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 8px;
+}
+
+.help { width: 44px; margin-right: -10px; }
+.help[hidden] { display: none; }
+
+/* A card to the left of the "?", with a tail pointing at it. */
+.hint {
+  position: absolute;
+  right: 52px;
+  top: 50%;
+  translate: 0 -50%;
+  display: grid;
+  gap: 6px;
+  width: min(300px, calc(100% - 200px));
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+  pointer-events: none;
+}
+
+.hint b { font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
+.hint p { color: var(--ink-soft); font-size: 0.9375rem; line-height: 1.4; }
+
+.hint::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  translate: 0 -50%;
+  rotate: 45deg;
+  border-radius: 3px;
+  background: var(--surface);
+}
+
+.hint[hidden] { display: none; }
+
+.add {
   height: 52px;
   padding: 0 28px;
   border-radius: 26px;
@@ -618,3 +662,97 @@ html:has(dialog[open]) { overflow: hidden; }
 @media (min-width: 960px) {
   .info { top: 12px; right: 12px; }
 }
+
+/* Welcome screen */
+#tour { overflow: hidden; }
+
+/* A panel that slides in from the left, half the screen wide (all of it on a phone). */
+#tour {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(100%, max(50vw, 420px));
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  background: var(--paper);
+  opacity: 1;
+  filter: none;
+  translate: -100% 0;
+  transition: translate 0.45s cubic-bezier(0.4, 0, 0.2, 1), overlay 0.45s allow-discrete, display 0.45s allow-discrete;
+}
+
+#tour[open] { translate: 0 0; }
+
+@starting-style {
+  #tour[open] { opacity: 1; filter: none; translate: -100% 0; }
+}
+
+@media (min-width: 640px) {
+  #tour { border-radius: 0 24px 24px 0; }
+}
+
+/* The content stays blurred while the panel travels, and sharpens as it lands. */
+#tour .tour-body {
+  filter: blur(8px);
+  opacity: 0.3;
+  transition: filter 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#tour[open] .tour-body { filter: none; opacity: 1; }
+
+@starting-style {
+  #tour[open] .tour-body { filter: blur(8px); opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #tour, #tour .tour-body { transition: none; }
+}
+
+.tour-body:focus { outline: none; }
+
+.tour-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: max(24px, env(safe-area-inset-top)) var(--gutter) max(24px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tour-step {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.tour-step h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.tour-step p {
+  max-width: 32ch;
+  margin-bottom: 8px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.tour-step video {
+  height: clamp(190px, 42dvh, 440px);
+  aspect-ratio: 3 / 4;
+  max-width: 100%;
+  border-radius: 20px;
+  background: var(--tint);
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.tour-tabs { display: flex; flex-wrap: wrap; justify-content: center; }
+.tour-tabs button { height: 44px; padding: 0 9px; color: var(--ink-soft); }
+.tour-tabs button[aria-selected="true"] { color: var(--coral); font-weight: 600; }
+.tour-step .add { margin-top: 12px; }

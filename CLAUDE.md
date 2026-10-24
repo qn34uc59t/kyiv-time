@@ -40,6 +40,11 @@ Scheduling happens in Kyiv time (Europe/Kyiv). Workers are worldwide. This tool 
 
 - Wordmark: `assets/kyivtime-logo.svg` is the source; the page header inlines it with `fill="currentColor"` so it follows light/dark. It is used only as the wordmark, not as an icon.
 
+## Welcome screen (first open)
+- `src/tour.ts` + `<dialog id="tour">`: one screen. Name, a one-line description, tabs (Android, iPhone, Computer, Pin tab; preselected from the user agent) with a silent looping clip of how to add it to a home screen or pin it, and one "Got it" button. It slides in from the left, half the screen wide (full width on a phone). No skip, no dots. On phones it opens once for a first-time visitor; on desktop browsers (`hover: hover` and `pointer: fine`) it does not, and a small card ("Install this app" plus one line) beside the "?" shows once instead (dismissed on any click or key, or after 12 s). Seen state is `kyiv-time:tour` in localStorage. It opens again from the "?" button after "Add a city". Hidden when the app is already installed (standalone).
+- Clips live in `public/clips/*.mp4` + a `.jpg` poster each (720x960, dark theme only). They are fetched whole and played from a blob, so one download feeds the player and the offline cache; the service worker caches `/clips/` at runtime (CacheFirst), not in the install precache.
+- Clips are generated, not hand-recorded: `scripts/clips/*.mjs` play small mock browsers/OS screens (`scenes.mjs`: generic, monochrome; the app inside is real) in a stage page with a camera, finger marker and caption band, via Playwright with system Chrome. Re-record after a UI change: start `npm run dev`, then `CLIP_ORIGIN=http://localhost:<port> node scripts/clips/run.mjs [name...]`. `playwright-core` is a devDependency for this only.
+
 ## Mobile first
 Every decision answers: "is this good on a phone?"
 - Design at 375px first; scale up.
@@ -63,4 +68,4 @@ Every decision answers: "is this good on a phone?"
 
 ## Commands
 - `npm run dev` · `npm run build` · `npm run preview` · `npm test`
-- `node scripts/build-cities.mjs <cities15000.txt>` · `node scripts/build-icons.mjs`
+- `node scripts/build-cities.mjs <cities15000.txt>` · `node scripts/build-icons.mjs` · `node scripts/clips/run.mjs [name...]` (dev server running)

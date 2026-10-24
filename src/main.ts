@@ -2,6 +2,7 @@ import type { GlobeView, Pin } from "./globe"
 import { KYIV_CITY, MAX_EXTRA, getCity, searchCities } from "./cities"
 import { addCity, getState, moveCity, removeCity, replaceCity, setGlobe, setHour12, subscribe } from "./state"
 import { getInstant, msUntilLive, getOffset, isLive, offsetLabel, reset, setOffset } from "./scrub"
+import { hasSeenTour, openTour, showHint, tourUseful } from "./tour"
 import { KYIV, dayDiff, formatShortDate, dayLabel, diffFromKyiv, formatClock, formatDate, utcLabel } from "./time"
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
@@ -361,6 +362,18 @@ renderSwitch()
 syncGlobe()
 renderScrub()
 setInterval(tick, 1000)
+
+// Install help: once for a first-time visitor, and again from the "?" button. Pointless once installed.
+if (tourUseful()) {
+  $("help-btn").addEventListener("click", openTour)
+  if (!hasSeenTour()) {
+    // Phones get the full welcome; desktop browsers just a pointer at the "?".
+    if (matchMedia("(hover: hover) and (pointer: fine)").matches) showHint()
+    else openTour()
+  }
+} else {
+  $("help-btn").hidden = true
+}
 
 // Attribution: hover on desktop; tap to toggle on touch.
 const infoEl = $("info")
