@@ -8,6 +8,7 @@ Scheduling happens in Kyiv time; your team is everywhere. Track Kyiv against up 
 - Drag the slider to plan: pick a Kyiv time and every city updates, daylight saving included.
 - Share a link and your cities come with it.
 - Optional rotating globe, 12-hour or 24-hour clock, light and dark mode, works offline.
+- Tap the ? for a short how-to on adding it to your home screen (Android, iPhone, desktop) or pinning the tab.
 
 ## Credits
 
@@ -38,3 +39,4 @@ npm run build    # outputs dist/
 
 - Cities: `node scripts/build-cities.mjs path/to/cities15000.txt` (GeoNames). Russia, Belarus, Iran, North Korea and Afghanistan are dropped here and again at runtime.
 - App icon and favicons: replace `assets/logo.svg` (square), then `node scripts/build-icons.mjs`. The header wordmark is `assets/kyivtime-logo.svg`, inlined in `index.html`.
+- Install how-to clips: `public/clips/` is generated, not hand-recorded. With `npm run dev` running, `CLIP_ORIGIN=http://localhost:5173 node scripts/clips/run.mjs [android|ios|desktop|pin]` re-records them (needs Chrome installed).
